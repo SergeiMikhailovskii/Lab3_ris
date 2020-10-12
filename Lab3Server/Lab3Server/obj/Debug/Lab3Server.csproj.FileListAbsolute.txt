@@ -1,0 +1,10 @@
+E:\Лабы\7 сем\рис\Lab3\Lab3Server\Lab3Server\bin\Debug\Lab3Server.exe.config
+E:\Лабы\7 сем\рис\Lab3\Lab3Server\Lab3Server\bin\Debug\Lab3Server.exe
+E:\Лабы\7 сем\рис\Lab3\Lab3Server\Lab3Server\bin\Debug\Lab3Server.pdb
+E:\Лабы\7 сем\рис\Lab3\Lab3Server\Lab3Server\obj\Debug\Lab3Server.csprojAssemblyReference.cache
+E:\Лабы\7 сем\рис\Lab3\Lab3Server\Lab3Server\obj\Debug\Lab3Server.Form1.resources
+E:\Лабы\7 сем\рис\Lab3\Lab3Server\Lab3Server\obj\Debug\Lab3Server.Properties.Resources.resources
+E:\Лабы\7 сем\рис\Lab3\Lab3Server\Lab3Server\obj\Debug\Lab3Server.csproj.GenerateResource.cache
+E:\Лабы\7 сем\рис\Lab3\Lab3Server\Lab3Server\obj\Debug\Lab3Server.csproj.CoreCompileInputs.cache
+E:\Лабы\7 сем\рис\Lab3\Lab3Server\Lab3Server\obj\Debug\Lab3Server.exe
+E:\Лабы\7 сем\рис\Lab3\Lab3Server\Lab3Server\obj\Debug\Lab3Server.pdb
