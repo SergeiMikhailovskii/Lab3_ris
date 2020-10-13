@@ -1,2 +1,2 @@
-Sergei Position1 1000
-Kolya Position2 1500
+{"Name":"a","Position":"a","Salary":1}
+{"Name":"a","Position":"a","Salary":1}

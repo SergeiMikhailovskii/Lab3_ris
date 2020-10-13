@@ -38,73 +38,59 @@ namespace Lab3Client
             writer = new StreamWriter(client.GetStream(), Encoding.ASCII);
 
             isConnected = true;
-            ServerRequest serverRequest = new ServerRequest();
-            serverRequest.ActionType = 0;
-            serverRequest.Payload = "Test";
-
-            string data = JsonSerializer.Serialize(serverRequest);
-
-            while (isConnected)
-            {
-                try
-                {
-                    writer.WriteLine(data);
-                    writer.Flush();
-                } catch (IOException)
-                {
-                    
-                }
-                
-            }
         }
 
         private void Form1_Load(object sender, EventArgs e)
         {
 
         }
+
+        private void AddWorker_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void AddWorker_Click_1(object sender, EventArgs e)
+        {
+            Worker worker = new Worker(Name.Text, Position.Text, long.Parse(Salary.Text));
+            string workerData = JsonSerializer.Serialize(worker);
+
+            ServerRequest request = new ServerRequest
+            {
+                ActionType = 0,
+                Payload = workerData
+            };
+
+            string data = JsonSerializer.Serialize(request);
+
+            if (isConnected)
+            {
+                try
+                {
+                    writer.WriteLine(data);
+                    writer.Flush();
+                }
+                catch (IOException)
+                {
+
+                }
+
+            }
+
+        }
     }
 
     class Worker
     {
-        private string name;
-        private string position;
-        private long salary;
-
-        public string GetName()
-        {
-            return name;
-        }
-
-        public void SetName(string name)
-        {
-            this.name = name;
-        }
-
-        public string GetPosition()
-        {
-            return position;
-        }
-
-        public void SetPosition(string position)
-        {
-            this.position = position;
-        }
-
-        public long GetSalary()
-        {
-            return salary;
-        }
-
-        public void SetSalary(long salary)
-        {
-            this.salary = salary;
-        }
+        public string Name { get; set; }
+        public string Position { get; set; }
+        public long Salary { get; set; }
 
         public Worker(string name, string position, long salary)
         {
-            this.name = name;
-            this.position = position;
-            this.salary = salary;
+            Name = name;
+            Position = position;
+            Salary = salary;
         }
     }
 

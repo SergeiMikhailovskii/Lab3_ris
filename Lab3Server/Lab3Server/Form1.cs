@@ -5,7 +5,8 @@ using System.Net.Sockets;
 using System.IO;
 using System.Threading;
 using System.Windows.Forms;
-
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 
 namespace Lab3Server
@@ -56,7 +57,27 @@ namespace Lab3Server
             {
                 clientData = streamReader.ReadLine();
                 Console.WriteLine("Data: " + clientData);
+
+                ServerRequest request = JsonSerializer.Deserialize<ServerRequest>(clientData);
+
+                if (request.ActionType == 0)
+                {
+                    AddWorker(request.Payload);
+                }
             }
+        }
+
+        private void AddWorker(string worker)
+        {
+            FileStream fileStream = new FileStream(@"E:\Лабы\7 сем\рис\Lab3\Lab3Server\text.txt", FileMode.OpenOrCreate, FileAccess.Write);
+
+            fileStream.Seek(0, SeekOrigin.End);
+
+            StreamWriter streamWriter = new StreamWriter(fileStream);
+
+            streamWriter.WriteLine(worker);
+            streamWriter.Close();
+            fileStream.Close();
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -72,45 +93,15 @@ namespace Lab3Server
 
     class Worker
     {
-        private string name;
-        private string position;
-        private long salary;
-
-        public string GetName()
-        {
-            return name;
-        }
-
-        public void SetName(string name)
-        {
-            this.name = name;
-        }
-
-        public string GetPosition()
-        {
-            return position;
-        }
-
-        public void SetPosition(string position)
-        {
-            this.position = position;
-        }
-
-        public long GetSalary()
-        {
-            return salary;
-        }
-
-        public void SetSalary(long salary)
-        {
-            this.salary = salary;
-        }
+        public string Name { get; set; }
+        public string Position { get; set; }
+        public long Salary { get; set; }
 
         public Worker(string name, string position, long salary)
         {
-            this.name = name;
-            this.position = position;
-            this.salary = salary;
+            Name = name;
+            Position = position;
+            Salary = salary;
         }
     }
 
