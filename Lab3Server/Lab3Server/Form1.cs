@@ -6,6 +6,8 @@ using System.IO;
 using System.Threading;
 using System.Windows.Forms;
 using System.Text.Json;
+using System.Collections.Generic;
+using System.Linq;
 using System.Text.Json.Serialization;
 
 
@@ -63,8 +65,98 @@ namespace Lab3Server
                 if (request.ActionType == 0)
                 {
                     AddWorker(request.Payload);
+                } else if (request.ActionType == 1)
+                {
+                    GetWorkers(streamWriter);
+                } else if (request.ActionType == 2)
+                {
+                    SearchWorker(request.Payload, streamWriter);
+                } else if (request.ActionType == 3)
+                {
+                    DeleteWorker(request.Payload, streamWriter);
+                } else if (request.ActionType == 4)
+                {
+                    SortBySalary(streamWriter);
                 }
             }
+        }
+
+        private void SortBySalary(StreamWriter streamWriter)
+        {
+            string line;
+            StreamReader reader = new StreamReader(@"E:\Лабы\7 сем\рис\Lab3\Lab3Server\text.txt");
+            List<Worker> workers = new List<Worker>();
+
+            while ((line = reader.ReadLine()) != null)
+            {
+                workers.Add(JsonSerializer.Deserialize<Worker>(line));
+            }
+
+            reader.Close();
+
+            IEnumerable<Worker> query = workers.OrderBy(worker => worker.Salary);
+            workers = query.ToList();
+            reader.Close();
+            streamWriter.Write(JsonSerializer.Serialize(workers));
+        }
+
+        private void DeleteWorker(string name, StreamWriter streamWriter)
+        {
+            string line;
+
+            StreamReader reader = new StreamReader(@"E:\Лабы\7 сем\рис\Lab3\Lab3Server\text.txt");
+            List<Worker> workers = new List<Worker>();
+
+            while ((line = reader.ReadLine()) != null)
+            {
+                workers.Add(JsonSerializer.Deserialize<Worker>(line));
+            }
+
+            reader.Close();
+
+            workers = workers.FindAll(worker => !worker.Name.Equals(name));
+
+            string workersStr = JsonSerializer.Serialize(workers);
+
+            streamWriter.Write(workersStr);
+
+            File.WriteAllText(@"E:\Лабы\7 сем\рис\Lab3\Lab3Server\text.txt", workersStr);
+        }
+
+        private void SearchWorker(string payload, StreamWriter writer)
+        {
+            string line;
+            List<Worker> workers = new List<Worker>();
+
+            StreamReader reader = new StreamReader(@"E:\Лабы\7 сем\рис\Lab3\Lab3Server\text.txt");
+
+            while ((line = reader.ReadLine()) != null)
+            {
+                workers.Add(JsonSerializer.Deserialize<Worker>(line));
+            }
+
+            workers = workers.FindAll(worker => worker.Name.Equals(payload));
+
+            writer.Write(JsonSerializer.Serialize(workers));
+
+            reader.Close();
+        }
+
+        private void GetWorkers(StreamWriter writer)
+        {
+            string line;
+            List<Worker> workers = new List<Worker>();
+
+            StreamReader reader = new StreamReader(@"E:\Лабы\7 сем\рис\Lab3\Lab3Server\text.txt");
+
+            while ((line = reader.ReadLine()) != null)
+            {
+                workers.Add(JsonSerializer.Deserialize<Worker>(line));
+            }
+
+            writer.Write(JsonSerializer.Serialize(workers));
+
+            reader.Close();
         }
 
         private void AddWorker(string worker)

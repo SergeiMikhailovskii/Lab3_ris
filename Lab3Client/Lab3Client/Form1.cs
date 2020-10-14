@@ -5,6 +5,7 @@ using System.IO;
 using System.Windows.Forms;
 using System.Json;
 using System.Text.Json;
+using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
 namespace Lab3Client
@@ -78,6 +79,157 @@ namespace Lab3Client
             }
 
         }
+
+        private void ShowAll_Click(object sender, EventArgs e)
+        {
+            ServerRequest request = new ServerRequest
+            {
+                ActionType = 1,
+            };
+
+            string data = JsonSerializer.Serialize(request);
+
+            if (isConnected)
+            {
+                try
+                {
+                    writer.WriteLine(data);
+                    writer.Flush();
+
+                    string serverResponse = reader.ReadLine();
+                    WorkersArray workers = JsonSerializer.Deserialize<WorkersArray>(serverResponse);
+
+                    string output = "";
+
+                    workers.Workers.ForEach(worker =>
+                    {
+                        output = worker.Name + " " + worker.Position + " " + worker.Salary + "\n";
+                    });
+
+                    SearchAllOutput.Text = output;
+                }
+                catch (IOException)
+                {
+
+                }
+
+            }
+
+        }
+
+        private void SearchByName_Click(object sender, EventArgs e)
+        {
+            ServerRequest request = new ServerRequest
+            {
+                ActionType = 2,
+                Payload = WorkerName.Text
+            };
+
+            string data = JsonSerializer.Serialize(request);
+
+            if (isConnected)
+            {
+                try
+                {
+                    writer.WriteLine(data);
+                    writer.Flush();
+
+                    string serverResponse = reader.ReadLine();
+                    WorkersArray workers = JsonSerializer.Deserialize<WorkersArray>(serverResponse);
+
+                    string output = "";
+
+                    workers.Workers.ForEach(worker =>
+                    {
+                        output = worker.Name + " " + worker.Position + " " + worker.Salary + "\n";
+                    });
+
+                    SearchAllOutput.Text = output;
+                }
+                catch (IOException)
+                {
+
+                }
+
+            }
+
+        }
+
+        private void DeleteBtn_Click(object sender, EventArgs e)
+        {
+            ServerRequest request = new ServerRequest
+            {
+                ActionType = 3,
+                Payload = WorkerName.Text
+            };
+
+            string data = JsonSerializer.Serialize(request);
+
+            if (isConnected)
+            {
+                try
+                {
+                    writer.WriteLine(data);
+                    writer.Flush();
+
+                    string serverResponse = reader.ReadLine();
+                    WorkersArray workers = JsonSerializer.Deserialize<WorkersArray>(serverResponse);
+
+                    string output = "";
+
+                    workers.Workers.ForEach(worker =>
+                    {
+                        output = worker.Name + " " + worker.Position + " " + worker.Salary + "\n";
+                    });
+
+                    SearchAllOutput.Text = output;
+                }
+                catch (IOException)
+                {
+
+                }
+
+            }
+
+
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            ServerRequest request = new ServerRequest
+            {
+                ActionType = 4,
+            };
+
+            string data = JsonSerializer.Serialize(request);
+
+            if (isConnected)
+            {
+                try
+                {
+                    writer.WriteLine(data);
+                    writer.Flush();
+
+                    string serverResponse = reader.ReadLine();
+                    WorkersArray workers = JsonSerializer.Deserialize<WorkersArray>(serverResponse);
+
+                    string output = "";
+
+                    workers.Workers.ForEach(worker =>
+                    {
+                        output = worker.Name + " " + worker.Position + " " + worker.Salary + "\n";
+                    });
+
+                    SearchAllOutput.Text = output;
+                }
+                catch (IOException)
+                {
+
+                }
+
+            }
+
+        }
     }
 
     class Worker
@@ -92,6 +244,11 @@ namespace Lab3Client
             Position = position;
             Salary = salary;
         }
+    }
+
+    class WorkersArray
+    {
+        public List<Worker> Workers { get; set; }
     }
 
     class ServerRequest
