@@ -179,6 +179,7 @@
             this.Edit.TabIndex = 16;
             this.Edit.Text = "Edit";
             this.Edit.UseVisualStyleBackColor = true;
+            this.Edit.Click += new System.EventHandler(this.Edit_Click);
             // 
             // Form1
             // 
@@ -201,7 +202,6 @@
             this.Controls.Add(this.Position);
             this.Controls.Add(this.Name);
             this.Controls.Add(this.button1);
-            this.Name = "Form1";
             this.Text = "Client";
             this.Load += new System.EventHandler(this.Form1_Load);
             this.ResumeLayout(false);

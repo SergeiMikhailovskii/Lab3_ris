@@ -103,7 +103,7 @@ namespace Lab3Client
 
                     workers.Workers.ForEach(worker =>
                     {
-                        output = worker.Name + " " + worker.Position + " " + worker.Salary + "\n";
+                        output += worker.Name + " " + worker.Position + " " + worker.Salary + "\r\n";
                     });
 
                     SearchAllOutput.Text = output;
@@ -141,7 +141,7 @@ namespace Lab3Client
 
                     workers.Workers.ForEach(worker =>
                     {
-                        output = worker.Name + " " + worker.Position + " " + worker.Salary + "\n";
+                        output += worker.Name + " " + worker.Position + " " + worker.Salary + "\r\n";
                     });
 
                     SearchAllOutput.Text = output;
@@ -179,7 +179,7 @@ namespace Lab3Client
 
                     workers.Workers.ForEach(worker =>
                     {
-                        output = worker.Name + " " + worker.Position + " " + worker.Salary + "\n";
+                        output += worker.Name + " " + worker.Position + " " + worker.Salary + "\r\n";
                     });
 
                     SearchAllOutput.Text = output;
@@ -217,7 +217,52 @@ namespace Lab3Client
 
                     workers.Workers.ForEach(worker =>
                     {
-                        output = worker.Name + " " + worker.Position + " " + worker.Salary + "\n";
+                        output += worker.Name + " " + worker.Position + " " + worker.Salary + "\r\n";
+                    });
+
+                    SearchAllOutput.Text = output;
+                }
+                catch (IOException)
+                {
+
+                }
+
+            }
+
+        }
+
+        private void Edit_Click(object sender, EventArgs e)
+        {
+            Worker newWorker = new Worker(NewName.Text, NewPosition.Text, long.Parse(NewSalary.Text));
+            EditWorkerRequest editWorkerRequest = new EditWorkerRequest
+            {
+                NewWorker = newWorker,
+                OldName = OldName.Text
+            };
+
+            ServerRequest request = new ServerRequest
+            {
+                ActionType = 5,
+                Payload = JsonSerializer.Serialize(editWorkerRequest)                
+            };
+
+            string data = JsonSerializer.Serialize(request);
+
+            if (isConnected)
+            {
+                try
+                {
+                    writer.WriteLine(data);
+                    writer.Flush();
+
+                    string serverResponse = reader.ReadLine();
+                    WorkersArray workers = JsonSerializer.Deserialize<WorkersArray>(serverResponse);
+
+                    string output = "";
+
+                    workers.Workers.ForEach(worker =>
+                    {
+                        output += worker.Name + " " + worker.Position + " " + worker.Salary + "\r\n";
                     });
 
                     SearchAllOutput.Text = output;
@@ -260,6 +305,12 @@ namespace Lab3Client
     class ServerResponse
     {
         public string Response { get; set; }
+    }
+
+    class EditWorkerRequest
+    {
+        public string OldName { get; set; }
+        public Worker NewWorker { get; set; }
     }
 
 }

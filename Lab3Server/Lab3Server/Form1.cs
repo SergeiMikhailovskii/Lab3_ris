@@ -67,25 +67,65 @@ namespace Lab3Server
                     AddWorker(request.Payload);
                 } else if (request.ActionType == 1)
                 {
-                    GetWorkers(streamWriter);
+                    GetWorkers(client);
                 } else if (request.ActionType == 2)
                 {
-                    SearchWorker(request.Payload, streamWriter);
+                    SearchWorker(request.Payload, client);
                 } else if (request.ActionType == 3)
                 {
-                    DeleteWorker(request.Payload, streamWriter);
+                    DeleteWorker(request.Payload, client);
                 } else if (request.ActionType == 4)
                 {
-                    SortBySalary(streamWriter);
+                    SortBySalary(client);
+                } else if (request.ActionType == 5)
+                {
+                    EditWorker(request.Payload, client);
                 }
             }
         }
 
-        private void SortBySalary(StreamWriter streamWriter)
+        private void EditWorker(string payload, TcpClient client)
+        {
+            EditWorkerRequest request = JsonSerializer.Deserialize<EditWorkerRequest>(payload);
+            Worker newWorker = request.NewWorker;
+
+            string line;
+            List<Worker> workers = new List<Worker>();
+            StreamWriter writer = new StreamWriter(client.GetStream(), Encoding.ASCII);
+
+            StreamReader reader = new StreamReader(@"E:\Лабы\7 сем\рис\Lab3\Lab3Server\text.txt");
+
+            while ((line = reader.ReadLine()) != null)
+            {
+                workers.Add(JsonSerializer.Deserialize<Worker>(line));
+            }
+
+            for (int i = 0; i < workers.Count; i++)
+            {
+                if (workers[i].Name.Equals(request.OldName))
+                {
+                    workers[i] = newWorker;
+                }
+            }
+
+            WorkersArray arr = new WorkersArray()
+            {
+                Workers = workers
+            };
+
+            reader.Close();
+
+            writer.Write(JsonSerializer.Serialize(arr));
+            writer.Close();
+
+        }
+
+        private void SortBySalary(TcpClient client)
         {
             string line;
             StreamReader reader = new StreamReader(@"E:\Лабы\7 сем\рис\Lab3\Lab3Server\text.txt");
             List<Worker> workers = new List<Worker>();
+            StreamWriter writer = new StreamWriter(client.GetStream(), Encoding.ASCII);
 
             while ((line = reader.ReadLine()) != null)
             {
@@ -96,13 +136,22 @@ namespace Lab3Server
 
             IEnumerable<Worker> query = workers.OrderBy(worker => worker.Salary);
             workers = query.ToList();
+
+            WorkersArray arr = new WorkersArray()
+            {
+                Workers = workers
+            };
+
             reader.Close();
-            streamWriter.Write(JsonSerializer.Serialize(workers));
+
+            writer.Write(JsonSerializer.Serialize(arr));
+            writer.Close();
         }
 
-        private void DeleteWorker(string name, StreamWriter streamWriter)
+        private void DeleteWorker(string name, TcpClient client)
         {
             string line;
+            StreamWriter writer = new StreamWriter(client.GetStream(), Encoding.ASCII);
 
             StreamReader reader = new StreamReader(@"E:\Лабы\7 сем\рис\Lab3\Lab3Server\text.txt");
             List<Worker> workers = new List<Worker>();
@@ -116,17 +165,24 @@ namespace Lab3Server
 
             workers = workers.FindAll(worker => !worker.Name.Equals(name));
 
-            string workersStr = JsonSerializer.Serialize(workers);
+            WorkersArray arr = new WorkersArray()
+            {
+                Workers = workers
+            };
 
-            streamWriter.Write(workersStr);
+            string workersStr = JsonSerializer.Serialize(arr);
+
+            writer.Write(workersStr);
+            writer.Flush();
 
             File.WriteAllText(@"E:\Лабы\7 сем\рис\Lab3\Lab3Server\text.txt", workersStr);
         }
 
-        private void SearchWorker(string payload, StreamWriter writer)
+        private void SearchWorker(string payload, TcpClient client)
         {
             string line;
             List<Worker> workers = new List<Worker>();
+            StreamWriter writer = new StreamWriter(client.GetStream(), Encoding.ASCII);
 
             StreamReader reader = new StreamReader(@"E:\Лабы\7 сем\рис\Lab3\Lab3Server\text.txt");
 
@@ -137,15 +193,22 @@ namespace Lab3Server
 
             workers = workers.FindAll(worker => worker.Name.Equals(payload));
 
-            writer.Write(JsonSerializer.Serialize(workers));
+            WorkersArray arr = new WorkersArray()
+            {
+                Workers = workers
+            };
+
+            writer.Write(JsonSerializer.Serialize(arr));
+            writer.Close();
 
             reader.Close();
         }
 
-        private void GetWorkers(StreamWriter writer)
+        private void GetWorkers(TcpClient client)
         {
             string line;
             List<Worker> workers = new List<Worker>();
+            StreamWriter writer = new StreamWriter(client.GetStream(), Encoding.ASCII);
 
             StreamReader reader = new StreamReader(@"E:\Лабы\7 сем\рис\Lab3\Lab3Server\text.txt");
 
@@ -154,7 +217,13 @@ namespace Lab3Server
                 workers.Add(JsonSerializer.Deserialize<Worker>(line));
             }
 
-            writer.Write(JsonSerializer.Serialize(workers));
+            WorkersArray arr = new WorkersArray()
+            {
+                Workers = workers
+            };
+
+            writer.Write(JsonSerializer.Serialize(arr));
+            writer.Close();
 
             reader.Close();
         }
@@ -206,6 +275,17 @@ namespace Lab3Server
     class ServerResponse
     {
         public string Response { get; set; }
+    }
+
+    class WorkersArray
+    {
+        public List<Worker> Workers { get; set; }
+    }
+
+    class EditWorkerRequest
+    {
+        public string OldName { get; set; }
+        public Worker NewWorker { get; set; }
     }
 
 }
