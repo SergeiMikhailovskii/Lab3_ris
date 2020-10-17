@@ -8,7 +8,6 @@ using System.Windows.Forms;
 using System.Text.Json;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.Json.Serialization;
 
 
 namespace Lab3Server
@@ -67,31 +66,30 @@ namespace Lab3Server
                     AddWorker(request.Payload);
                 } else if (request.ActionType == 1)
                 {
-                    GetWorkers(client);
+                    GetWorkers(streamWriter);
                 } else if (request.ActionType == 2)
                 {
-                    SearchWorker(request.Payload, client);
+                    SearchWorker(request.Payload, streamWriter);
                 } else if (request.ActionType == 3)
                 {
-                    DeleteWorker(request.Payload, client);
+                    DeleteWorker(request.Payload, streamWriter);
                 } else if (request.ActionType == 4)
                 {
-                    SortBySalary(client);
+                    SortBySalary(streamWriter);
                 } else if (request.ActionType == 5)
                 {
-                    EditWorker(request.Payload, client);
+                    EditWorker(request.Payload, streamWriter);
                 }
             }
         }
 
-        private void EditWorker(string payload, TcpClient client)
+        private void EditWorker(string payload, StreamWriter clientWriter)
         {
             EditWorkerRequest request = JsonSerializer.Deserialize<EditWorkerRequest>(payload);
             Worker newWorker = request.NewWorker;
 
             string line;
             List<Worker> workers = new List<Worker>();
-            StreamWriter writer = new StreamWriter(client.GetStream(), Encoding.ASCII);
 
             StreamReader reader = new StreamReader(@"E:\Лабы\7 сем\рис\Lab3\Lab3Server\text.txt");
 
@@ -115,17 +113,21 @@ namespace Lab3Server
 
             reader.Close();
 
-            writer.Write(JsonSerializer.Serialize(arr));
-            writer.Close();
+            clientWriter.WriteLine(JsonSerializer.Serialize(arr));
+            clientWriter.Flush();
+
+            string workersStr = JsonSerializer.Serialize(workers);
+
+            File.WriteAllText(@"E:\Лабы\7 сем\рис\Lab3\Lab3Server\text.txt", workersStr);
+
 
         }
 
-        private void SortBySalary(TcpClient client)
+        private void SortBySalary(StreamWriter clientWriter)
         {
             string line;
             StreamReader reader = new StreamReader(@"E:\Лабы\7 сем\рис\Lab3\Lab3Server\text.txt");
             List<Worker> workers = new List<Worker>();
-            StreamWriter writer = new StreamWriter(client.GetStream(), Encoding.ASCII);
 
             while ((line = reader.ReadLine()) != null)
             {
@@ -144,14 +146,13 @@ namespace Lab3Server
 
             reader.Close();
 
-            writer.Write(JsonSerializer.Serialize(arr));
-            writer.Close();
+            clientWriter.WriteLine(JsonSerializer.Serialize(arr));
+            clientWriter.Flush();
         }
 
-        private void DeleteWorker(string name, TcpClient client)
+        private void DeleteWorker(string name, StreamWriter clientWriter)
         {
             string line;
-            StreamWriter writer = new StreamWriter(client.GetStream(), Encoding.ASCII);
 
             StreamReader reader = new StreamReader(@"E:\Лабы\7 сем\рис\Lab3\Lab3Server\text.txt");
             List<Worker> workers = new List<Worker>();
@@ -172,17 +173,16 @@ namespace Lab3Server
 
             string workersStr = JsonSerializer.Serialize(arr);
 
-            writer.Write(workersStr);
-            writer.Flush();
+            clientWriter.WriteLine(workersStr);
+            clientWriter.Flush();
 
             File.WriteAllText(@"E:\Лабы\7 сем\рис\Lab3\Lab3Server\text.txt", workersStr);
         }
 
-        private void SearchWorker(string payload, TcpClient client)
+        private void SearchWorker(string payload, StreamWriter clientWriter)
         {
             string line;
             List<Worker> workers = new List<Worker>();
-            StreamWriter writer = new StreamWriter(client.GetStream(), Encoding.ASCII);
 
             StreamReader reader = new StreamReader(@"E:\Лабы\7 сем\рис\Lab3\Lab3Server\text.txt");
 
@@ -191,24 +191,23 @@ namespace Lab3Server
                 workers.Add(JsonSerializer.Deserialize<Worker>(line));
             }
 
-            workers = workers.FindAll(worker => worker.Name.Equals(payload));
+            workers = workers.FindAll(worker => worker.Name.Contains(payload));
 
             WorkersArray arr = new WorkersArray()
             {
                 Workers = workers
             };
 
-            writer.Write(JsonSerializer.Serialize(arr));
-            writer.Close();
+            clientWriter.WriteLine(JsonSerializer.Serialize(arr));
+            clientWriter.Flush();
 
             reader.Close();
         }
 
-        private void GetWorkers(TcpClient client)
+        private void GetWorkers(StreamWriter clientWriter)
         {
             string line;
             List<Worker> workers = new List<Worker>();
-            StreamWriter writer = new StreamWriter(client.GetStream(), Encoding.ASCII);
 
             StreamReader reader = new StreamReader(@"E:\Лабы\7 сем\рис\Lab3\Lab3Server\text.txt");
 
@@ -222,8 +221,8 @@ namespace Lab3Server
                 Workers = workers
             };
 
-            writer.Write(JsonSerializer.Serialize(arr));
-            writer.Close();
+            clientWriter.WriteLine(JsonSerializer.Serialize(arr));
+            clientWriter.Flush();
 
             reader.Close();
         }
@@ -237,7 +236,7 @@ namespace Lab3Server
             StreamWriter streamWriter = new StreamWriter(fileStream);
 
             streamWriter.WriteLine(worker);
-            streamWriter.Close();
+            streamWriter.Flush();
             fileStream.Close();
         }
 

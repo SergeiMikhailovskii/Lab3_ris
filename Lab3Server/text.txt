@@ -1,2 +1,1 @@
-{"Name":"a","Position":"a","Salary":1}
-{"Name":"a","Position":"a","Salary":1}
+[{"Name":"a","Position":"a","Salary":1},{"Name":"b","Position":"abc","Salary":20},{"Name":"c","Position":"ac","Salary":3},{"Name":"c","Position":"acd","Salary":0}]

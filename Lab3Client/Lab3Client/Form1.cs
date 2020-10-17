@@ -3,10 +3,8 @@ using System.Text;
 using System.Net.Sockets;
 using System.IO;
 using System.Windows.Forms;
-using System.Json;
 using System.Text.Json;
 using System.Collections.Generic;
-using System.Text.Json.Serialization;
 
 namespace Lab3Client
 {
@@ -27,10 +25,17 @@ namespace Lab3Client
 
         private void button1_Click(object sender, EventArgs e)
         {
-            client = new TcpClient();
-            client.Connect("127.0.0.1", 5555);
+            try
+            {
+                client = new TcpClient();
+                client.Connect("127.0.0.1", 5555);
 
-            HandleCommunication();
+                HandleCommunication();
+            } catch (SocketException)
+            {
+                Console.WriteLine("Server is not found");
+            }
+
         }
 
         private void HandleCommunication()
