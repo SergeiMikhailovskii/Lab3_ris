@@ -280,6 +280,12 @@ namespace Lab3Client
             }
 
         }
+
+        private void Disconnect_Click(object sender, EventArgs e)
+        {
+            client.GetStream().Close();
+            client.Close();
+        }
     }
 
     class Worker

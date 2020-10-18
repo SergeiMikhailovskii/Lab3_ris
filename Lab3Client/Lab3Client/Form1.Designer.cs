@@ -44,6 +44,7 @@
             this.NewPosition = new System.Windows.Forms.TextBox();
             this.NewSalary = new System.Windows.Forms.TextBox();
             this.Edit = new System.Windows.Forms.Button();
+            this.Disconnect = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // button1
@@ -181,11 +182,22 @@
             this.Edit.UseVisualStyleBackColor = true;
             this.Edit.Click += new System.EventHandler(this.Edit_Click);
             // 
+            // Disconnect
+            // 
+            this.Disconnect.Location = new System.Drawing.Point(13, 40);
+            this.Disconnect.Name = "Disconnect";
+            this.Disconnect.Size = new System.Drawing.Size(86, 23);
+            this.Disconnect.TabIndex = 17;
+            this.Disconnect.Text = "Disconnect";
+            this.Disconnect.UseVisualStyleBackColor = true;
+            this.Disconnect.Click += new System.EventHandler(this.Disconnect_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.Disconnect);
             this.Controls.Add(this.Edit);
             this.Controls.Add(this.NewSalary);
             this.Controls.Add(this.NewPosition);
@@ -227,6 +239,7 @@
         private System.Windows.Forms.TextBox NewPosition;
         private System.Windows.Forms.TextBox NewSalary;
         private System.Windows.Forms.Button Edit;
+        private System.Windows.Forms.Button Disconnect;
     }
 }
 
